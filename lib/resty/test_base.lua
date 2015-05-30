@@ -1,3 +1,5 @@
+-- Copyright (C) YuanSheng Wang (membphis), 360 Inc.
+
 local lock = require "resty.lock"
 
 local _M = {
