@@ -20,7 +20,7 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
     server {
         location /test {
             content_by_lua '
-                	local tb    = require "resty.test_base"
+                	local tb    = require "resty.iresty_test"
 					local test = tb.new({unit_name="bench_example"})
 
 					function tb:init(  )
