@@ -141,6 +141,7 @@ function _M.run(self, loop_count )
           self.count_succ = self.count_succ + 1
         end
         self.processing = nil
+        ngx.flush()
       end
     end
     
