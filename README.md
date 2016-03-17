@@ -17,7 +17,17 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
     # the ngx_openresty bundle:
     lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
 
+    # A lua_shared_dict named cache_ngx is required by test:bench_run
+    lua_shared_dict cache_ngx 100k;
+
     server {
+
+        listen 8080;
+
+        server_name 127.0.0.1;
+
+        error_log /path/to/error.log;
+
         location /test {
             content_by_lua '
                 	local tb    = require "resty.iresty_test"
@@ -47,6 +57,12 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
             ';
         }
     }
+```
+
+Run test case:
+
+```
+curl "http://127.0.0.1:8080/test"
 ```
 
 The output result:
