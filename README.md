@@ -30,8 +30,9 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
 
         location /test {
             content_by_lua '
-                	local tb    = require "resty.iresty_test"
-					local test = tb.new({unit_name="bench_example"})
+                	local iresty_test    = require "resty.iresty_test"
+					local tb = iresty_test.new({unit_name="bench_example"})
+
 
 					function tb:init(  )
 					    self:log("init complete")
@@ -50,10 +51,10 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
 					end
 
 					-- units test
-					test:run()
-					
+					tb:run()
+
 					-- bench units test
-					test:bench_run()
+					tb:bench_run()
             ';
         }
     }
