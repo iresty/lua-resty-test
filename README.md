@@ -12,7 +12,7 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
 #Synopsis
 
 
-```
+```nginx
  # you do not need the following line if you are using
     # the ngx_openresty bundle:
     lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
@@ -62,13 +62,13 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
 
 Run test case:
 
-```
+```shell
 curl "http://127.0.0.1:8080/test"
 ```
 
 The output result:
 
-```
+```shell
 0.000  [bench_example] unit test start
 0.000  [bench_example] init complete
 0.000    \_[test_00001] fail ...de/nginx/main_server/test_case_lua/unit/test_example.lua:9: invalid input
