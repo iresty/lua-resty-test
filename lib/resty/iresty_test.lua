@@ -38,8 +38,10 @@ function _M._log(self, color, ...)
     end
     ngx.print(format_color(color_d[color])..table.concat( logs, " ")..'\x1b[m')
   else
-    ngx.print(table.concat( logs, " "))
+    ngx.print(...)
   end
+  
+  ngx.flush()
 end
 
 function _M._log_standard_head( self )
@@ -104,7 +106,7 @@ function _M._init_test_units( self )
   end
 
   local test_inits = {}
-  for k,v in pairs(_M) do
+  for k,v in pairs(self) do
     if k:lower():sub(1, 4) == "test" and type(v) == "function" then
       table.insert(test_inits, k)
     end
@@ -120,9 +122,6 @@ function _M.run(self, loop_count )
       self:log_finish_succ("unit test start")
     end
 
-    if self.init then
-      self:init()
-    end
     self:_init_test_units()
 
     loop_count = loop_count or 1
@@ -131,6 +130,10 @@ function _M.run(self, loop_count )
 
     for i=1,loop_count do
       for _,k in pairs(self._test_inits) do
+        if self.init then
+          self:init()
+        end
+
         self.processing = k
         local _, err = pcall(self[k], self)
         if err then
@@ -141,9 +144,7 @@ function _M.run(self, loop_count )
           self.count_succ = self.count_succ + 1
         end
         self.processing = nil
-        if self.write_log then
-          ngx.flush()
-        end
+        ngx.flush()
       end
     end
     
