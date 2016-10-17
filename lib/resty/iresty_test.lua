@@ -12,8 +12,8 @@ local mt = { __index = _M }
 function _M.new(opts)
     opts = opts or {}
     local unit_name = opts.unit_name
-    local write_log = (nil == opts.write_log) and true or write_log
-    return setmetatable({start_time=ngx.now(), unit_name = unit_name, 
+    local write_log = (nil == opts.write_log) and true or opts.write_log
+    return setmetatable({start_time=ngx.now(), unit_name = unit_name,
                           write_log = write_log, _test_inits = opts.test_inits,
                           processing=nil, count = 0,
                           count_fail=0, count_succ=0}, mt)
@@ -40,13 +40,13 @@ function _M._log(self, color, ...)
   else
     ngx.print(...)
   end
-  
+
   ngx.flush()
 end
 
 function _M._log_standard_head( self )
   if not self.write_log then
-    return 
+    return
   end
 
     local fun_format = self.unit_name
@@ -62,7 +62,7 @@ end
 
 function _M.log( self, ... )
   if not self.write_log then
-    return 
+    return
   end
 
   local log = {...}
@@ -77,7 +77,7 @@ end
 
 function _M.log_finish_fail( self, ... )
   if not self.write_log then
-    return 
+    return
   end
 
   local log = {...}
@@ -89,7 +89,7 @@ end
 
 function _M.log_finish_succ( self, ... )
   if not self.write_log then
-    return 
+    return
   end
 
   local log = {...}
@@ -145,9 +145,13 @@ function _M.run(self, loop_count )
         end
         self.processing = nil
         ngx.flush()
+
+        if self.destroy then
+          self:destroy()
+        end
       end
     end
-    
+
     self.time_ended = ngx.now()
 
     if self.unit_name then
@@ -243,7 +247,37 @@ function _M.bench_run(self, total_count, micro_count, parallels)
     ngx.log(ngx.ERR, "bench all done")
 end
 
-function my_clean(  )
+
+function _M.mock_run(self, mock_rules, test_run, ...)
+
+    local old_tb = 1
+    local old_func = 2
+    local new_func = 3
+
+    --mock
+    for _, rule in ipairs(mock_rules) do
+        local tmp = rule[old_tb][rule[old_func]]
+        rule[old_tb][rule[old_func]] = rule[new_func]
+        rule[new_func] = tmp
+    end
+
+    --exec test
+    local ok, res, err = pcall(test_run, ...)
+
+    --resume
+    for _, rule in ipairs(mock_rules) do
+        rule[old_tb][rule[old_func]] = rule[new_func]
+    end
+
+    if not ok then  -- pcall fail, the error msg stored in "res"
+      error(res)
+    end
+
+    return res, err
+end
+
+
+local function my_clean(  )
     running = false
 end
 ngx.on_abort(my_clean)
