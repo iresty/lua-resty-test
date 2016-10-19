@@ -25,7 +25,8 @@ function _M.new(opts)
     return setmetatable({start_time=ngx.now(), unit_name = unit_name,
                           write_log = write_log, _test_inits = opts.test_inits,
                           processing=nil, count = 0,
-                          count_fail=0, count_succ=0}, mt)
+                          count_fail=0, count_succ=0,
+                          mock_func = {}}, mt)
 end
 
 
@@ -168,5 +169,43 @@ function _M.run(self, loop_count)
     end
 end
 
+
+function _M.mock_run(self, mock_rules, test_run, ...)
+
+    local idx_tbl  = 1
+    local idx_name = 2
+    local idx_new_func = 3
+    local idx_org_func = 4
+
+    --mock
+    for _, rule in ipairs(mock_rules) do
+        local fun_name = rule[idx_name]
+        local org_fun  = rule[idx_tbl][fun_name]
+        local new_fun  = rule[idx_new_func]
+
+        rule[idx_org_func]      = org_fun   -- store the org function
+        rule[idx_tbl][fun_name] = new_fun
+
+        -- store the orgnize function
+        self.mock_func[new_fun] = org_fun
+    end
+
+    --exec test
+    local ok, res, err = pcall(test_run, ...)
+
+    --resume
+    for _, rule in ipairs(mock_rules) do
+      local fun_name = rule[idx_name]
+      local org_fun  = rule[idx_org_func]
+
+      rule[idx_tbl][fun_name] = org_fun     -- restore the org function
+    end
+
+    if not ok then  -- pcall fail, the error msg stored in "res"
+      error(res)
+    end
+
+    return res, err
+end
 
 return _M
