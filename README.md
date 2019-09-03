@@ -2,14 +2,12 @@
 lua-resty-test is Ngx_lua test frame based on Openresty
 
 
-#Description
+# Description
 This Lua library is a test frame for test your ngx_lua source or other server(tcp or udp):
 
 http://wiki.nginx.org/HttpLuaModule
 
-Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
-
-#Synopsis
+# Synopsis
 
 
 ```lua
@@ -39,25 +37,12 @@ tb:run()
 
 Run test case:
 
-```shell
-resty test.lua
-```
+<img src="./images/run-test-result.png" width="50%" height="50%">
 
-The output result:
-
-```shell
-0.000  [example] unit test start
-0.000  [example] init complete
-0.000    \_[test_00001] fail ...de/nginx/main_server/test_case_lua/unit/test_example.lua:9: invalid input
-0.000    \_[test_00003] ↓ ok
-0.000    \_[test_00003] PASS
-0.000  [example] unit test complete
-```
-
-#Author
+# Author
 Yuansheng Wang "membphis" (王院生) membphis@gmail.com, 360 Inc.
 
-#Copyright and License
+# Copyright and License
 This module is licensed under the BSD license.
 
 Copyright (C) 2016-2019, by "membphis" (王院生) membphis@gmail.com.
@@ -72,5 +57,6 @@ Redistributions in binary form must reproduce the above copyright notice, this l
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#See Also
+# See Also
+
 * the ngx_lua module: http://wiki.nginx.org/HttpLuaModule

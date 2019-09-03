@@ -10,9 +10,6 @@ description = {
    license = "Apache License 2.0",
    maintainer = "Yuansheng Wang <membphis@gmail.com>"
 }
-dependencies = {
-   "luaunit",
-}
 build = {
    type = "builtin",
    modules = {
