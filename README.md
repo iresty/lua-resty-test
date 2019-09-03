@@ -12,55 +12,35 @@ Note that at least ngx_lua 0.5.14 or ngx_openresty 1.2.1.14 is required.
 #Synopsis
 
 
-```nginx
- # you do not need the following line if you are using
-    # the ngx_openresty bundle:
-    lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
+```lua
+-- test.lua
+local iresty_test    = require "resty.iresty_test"
+local tb = iresty_test.new({unit_name="example"})
 
-    # A lua_shared_dict named cache_ngx is required by test:bench_run
-    lua_shared_dict cache_ngx 100k;
+function tb:init(  )
+    self:log("init complete")
+end
 
-    server {
+function tb:test_00001(  )
+    error("invalid input")
+end
 
-        listen 8080;
+function tb:atest_00002()
+    self:log("never be called")
+end
 
-        server_name 127.0.0.1;
+function tb:test_00003(  )
+    self:log("ok")
+end
 
-        error_log /path/to/error.log;
-
-        location /test {
-            content_by_lua '
-                	local iresty_test    = require "resty.iresty_test"
-					local tb = iresty_test.new({unit_name="example"})
-
-
-					function tb:init(  )
-					    self:log("init complete")
-					end
-
-					function tb:test_00001(  )
-					    error("invalid input")
-					end
-
-					function tb:atest_00002()
-					    self:log("never be called")
-					end
-
-					function tb:test_00003(  )
-					   self:log("ok")
-					end
-
-					-- units test
-					tb:run()
-            ';
-        }
-    }
+-- units test
+tb:run()
 ```
 
 Run test case:
 
 ```shell
-curl "http://127.0.0.1:8080/test"
+resty test.lua
 ```
 
 The output result:
@@ -80,7 +60,7 @@ Yuansheng Wang "membphis" (王院生) membphis@gmail.com, 360 Inc.
 #Copyright and License
 This module is licensed under the BSD license.
 
-Copyright (C) 2012, by Zhang "agentzh" Yichun (章亦春) agentzh@gmail.com.
+Copyright (C) 2016-2019, by "membphis" (王院生) membphis@gmail.com.
 
 All rights reserved.
 
