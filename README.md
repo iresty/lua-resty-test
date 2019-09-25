@@ -40,66 +40,46 @@ Run test case:
 <img src="./images/run-test-result.png" width="50%" height="50%">
 
 # Mock Example
-lua-resty-test provides a mock_run method to users testing.We always need to test whether the interface can be properly handled when the function returns an error.And mock_run method can help us solve this problem.
+lua-resty-test provides a mock_run method to users testing.We always need to test whether the interface can be properly handled when the function returns an error. And mock_run method can help us solve this problem.
 
-see example:
+example:
+```lua
+local iresty_test    = require "resty.iresty_test"
+local tb = iresty_test.new({unit_name="example_mock"})
 
-nginx.conf:
-```nginx
-# you do not need the following line if you are using
-# the ngx_openresty bundle:
-lua_package_path "/path/to/lua-resty-redis/lib/?.lua;;";
+local M = {}
+function M.test()
+    return "hello world"
+end
 
-server {
 
-    listen 8080;
+function tb:test_00001()
+    local function mock_test()
+        return "mock test func error"
+    end
 
-    server_name 127.0.0.1;
-
-    error_log /path/to/error.log;
-
-    # use mock_run
-    location /test_mock {
-        content_by_lua_block {
-            local iresty_test = require "resty.iresty_test"
-            local tb = iresty_test.new({unit_name = "mock_example"})
-            local M  = {}
-            function M.test()
-                return "Hello World"
-            end
-
-            function tb:test_001()
-                local function _test()
-                    return "test func error"
-                end
-                    
-                local mockrules = {
-                    { M, "test", _test }
-                }
-
-                local function _test_run()
-                    self:log(M.test())
-                end
-
-                self:mock_run(mockrules, _test_run)
-            end
-
-            tb:run()
-        }
+    local mock_rules = {
+        { M, "test", mock_test}
     }
-}
+
+    local function mock_test_run()
+        self:log(M.test())
+    end
+
+    self:mock_run(mock_rules, mock_test_run)
+end
+
+-- units test
+tb:run()
+
 ```
-Run test case:
-```
-curl '127.0.0.1:8080/test_mock'
-```
-The output result:
+
+Run mock test case:
 ```shell
-0.000 [mock_example] unit test start 
-0.000   \_[test_001] test func error
-0.000   \_[test_001] PASS 
-0.000 [mock_example] unit test complete 
+resty -Ilib example_mock.lua
 ```
+<img src="./images/run-mock-test-result.png" width="50%" height="50%">
+
 
 # Author
 Yuansheng Wang "membphis" (王院生) membphis@gmail.com, 360 Inc.
